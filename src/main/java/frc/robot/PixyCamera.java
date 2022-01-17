@@ -40,7 +40,7 @@ public class PixyCamera {
 		return largestBlock;
 	}
 
-	public void toggleLights(){
+	public static void toggleLights(){
 		LampsEnabled = !LampsEnabled;
 		if (LampsEnabled) {
 			pixy.setLamp((byte) 1, (byte) 1); // Turns the LEDs on
