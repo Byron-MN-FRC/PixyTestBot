@@ -1,0 +1,87 @@
+plugins {
+    id "java"
+    id "edu.wpi.first.GradleRIO" version "${gradle_rio_version}"
+    id "maven-publish"
+}
+
+sourceCompatibility = JavaVersion.VERSION_11
+targetCompatibility = JavaVersion.VERSION_11
+
+javadoc {
+    source = sourceSets.main.allJava
+    classpath = sourceSets.main.runtimeClasspath
+}
+
+// Defining my dependencies. In this case, WPILib (+ friends), and vendor libraries.
+// Also defines JUnit 4.
+dependencies {
+    implementation "edu.wpi.first.wpilibj:wpilibj-java:${wpi.wpilibVersion}"
+}
+
+ext {
+    jarToPublish = file( "${project.artifact_name}.jar" )
+}
+
+jar {
+	baseName "${project.artifact_name}"
+}
+
+task sourceJar(type: Jar, dependsOn: classes) {
+	baseName "${project.artifact_name}"
+    classifier 'sources'
+    from sourceSets.main.allSource
+}
+ 
+task javadocJar(type: Jar, dependsOn: javadoc) {
+	baseName "${project.artifact_name}"
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+
+task replaceVersionInREADME {
+    ant.replaceregexp(match:"${project.artifact_group}:${project.artifact_name}:([0-9\\.]+)", replace:"${project.artifact_group}:${project.artifact_name}:${project.artifact_version}", flags:'g', byline:true, encoding: 'UTF-8') {
+        fileset(dir: '.', includes: 'README.md')
+    }
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+       	 	from components.java
+        	artifact sourceJar
+            artifact javadocJar
+        	groupId = "${project.artifact_group}"
+            artifactId = "${project.artifact_name}"
+            version = "${project.artifact_version}"
+            pom {
+                name = 'Pixy2JavaAPI'
+                description = 'Java port of Pixy2 API for FIRST Robotics'
+                url = 'https://github.com/PseudoResonance/Pixy2JavaAPI/'
+                licenses {
+                    license {
+                        name = 'GNU General Public License, version 2'
+                        url = 'http://www.gnu.org/licenses/gpl-2.0.html'
+                    }
+                }
+                developers {
+                    developer {
+                        id = 'PseudoResonance'
+                        name = 'Josh Otake'
+                        email = 'kaio11602@gmail.com'
+                    }
+                }
+            }
+        }
+    }
+    repositories {
+        maven {
+       	 	def releasesRepoUrl = "http://192.168.0.20:4540/repository/maven-releases/"
+            def snapshotsRepoUrl = "http://192.168.0.20:4540/repository/maven-snapshots/"
+            url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+            credentials {
+                username = project.hasProperty('nexus_username') ? nexus_username : (System.getenv('NEXUS_USERNAME') != null ? System.getenv('NEXUS_USERNAME') : '')
+                password = project.hasProperty('nexus_password') ? nexus_password : (System.getenv('NEXUS_PASSWORD') != null ? System.getenv('NEXUS_PASSWORD') : '')
+            }
+        }
+    }
+}
