@@ -14,9 +14,9 @@ Children:
             default: '2'
             name: CAN ID
             validators: &id002 [CANID]
-            value: '12'
-        Base: Talon SRX
-        Name: Talon SRX 1
+            value: '0'
+        Base: Victor SPX
+        Name: leftVictor
       - Children: []
         Properties:
           CAN ID: !!robotbuilder.data.properties.ChoicesProperty
@@ -24,16 +24,16 @@ Children:
             default: '2'
             name: CAN ID
             validators: *id002
-            value: '5'
-        Base: Talon SRX
-        Name: Talon SRX 2
+            value: '3'
+        Base: Victor SPX
+        Name: rightVictor
       Properties:
         Right Motor: !!robotbuilder.data.properties.ChildSelectionProperty
           default: 1
           name: Right Motor
           type: PIDOutput
           validators: [RobotDrive2, ChildDropdownSelected]
-          value: Talon SRX 2
+          value: rightVictor
         Maximum Output: !!robotbuilder.data.properties.DoubleProperty {default: 1,
           name: Maximum Output, validators: null, value: 0.8}
         Left Motor: !!robotbuilder.data.properties.ChildSelectionProperty
@@ -41,11 +41,11 @@ Children:
           name: Left Motor
           type: PIDOutput
           validators: [RobotDrive2, ChildDropdownSelected]
-          value: Talon SRX 1
+          value: leftVictor
         Safety Expiration Time: !!robotbuilder.data.properties.DoubleProperty {default: 0.1,
           name: Safety Expiration Time, validators: null, value: 0.1}
         Safety Enabled: !!robotbuilder.data.properties.BooleanProperty {default: true,
-          name: Safety Enabled, validators: null, value: true}
+          name: Safety Enabled, validators: null, value: false}
       Base: Differential Drive
       Name: DifferentialDrive1
     - Children: []
@@ -435,10 +435,10 @@ Children:
       Requires: !!robotbuilder.data.properties.TypeSelectionProperty {default: None,
         name: Requires, type: Subsystem, validators: null, value: DriveTrain}
       Parameter presets: !!robotbuilder.data.properties.ParameterSetProperty
-        default: &id006 []
+        default: []
         name: Parameter presets
         validators: null
-        value: *id006
+        value: []
       Button on SmartDashboard: !!robotbuilder.data.properties.BooleanProperty {default: true,
         name: Button on SmartDashboard, validators: null, value: false}
     Base: Command
