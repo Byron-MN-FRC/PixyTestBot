@@ -116,8 +116,8 @@ differentialDrive1.setMaxOutput(0.8);
         //     RobotContainer.getInstance().m_driveTrain.differentialDrive1.
         //         arcadeDrive(stick.getRightX(),stick.getRightY());
         // }
-        double y = stick.getY();
-        double twist = stick.getZ();
+        double y = stick.getZ();
+        double twist = stick.getY();
         differentialDrive1.arcadeDrive(y, twist, true);
     
 
